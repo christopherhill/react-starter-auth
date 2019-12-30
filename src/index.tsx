@@ -8,7 +8,29 @@ import * as serviceWorker from './serviceWorker'
 
 // set ag-grid license manager if present
 
-ReactDOM.render(<App />, document.getElementById('root'))
+import { Auth0Provider } from './auth/react-auth0-spa'
+import config from './../config/auth_config.json'
+import history from './shared/history'
+
+const onRedirectCallback = (appState: any) => {
+  history.push(
+    appState && appState.targetUrl
+      ? appState.targetUrl
+      : window.location.pathname
+  )
+}
+
+ReactDOM.render(
+  <Auth0Provider
+    domain={config.domain}
+    client_id={config.clientId}
+    redirect_uri={window.location.origin}
+    onRedirectCallback={onRedirectCallback}
+  >
+    <App />
+  </Auth0Provider>,
+  document.getElementById('root')
+)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
